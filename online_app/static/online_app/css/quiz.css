@@ -1,0 +1,47 @@
+/* Quiz Styling */
+
+.quiz-card {
+  background: var(--white);
+  border: 1px solid var(--lavender);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  padding: 2rem;
+  margin-bottom: 1.5rem;
+}
+
+.question-block {
+  border-bottom: 1px solid var(--lavender);
+  padding-bottom: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.quiz-option-label {
+  display: block;
+  background: var(--lavender-light);
+  border: 1px solid var(--lavender-dark);
+  border-radius: var(--radius-sm);
+  padding: 0.85rem 1rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 0.95rem;
+  margin-bottom: 0.5rem;
+}
+
+.quiz-option-label:hover {
+  background: var(--lavender);
+  border-color: var(--purple-soft);
+}
+
+.quiz-result-score-circle {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  border: 6px solid var(--purple-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1.5rem;
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: var(--purple-primary);
+}

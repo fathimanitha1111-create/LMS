@@ -1,0 +1,43 @@
+{% extends 'online_app/base.html' %}
+{% load static %}
+
+{% block title %}Create Assignment - {{ course.title }}{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-lg-7">
+      <div class="card-custom p-4 p-md-5 bg-white">
+        <h3 class="fw-bold mb-1 text-dark">Create Assignment</h3>
+        <p class="text-muted small mb-4">Course: {{ course.title }}</p>
+
+        <form method="POST">
+          {% csrf_token %}
+          <div class="row g-3">
+            <div class="col-12">
+              <label class="form-label small fw-semibold">Assignment Title *</label>
+              {{ form.title }}
+            </div>
+            <div class="col-12">
+              <label class="form-label small fw-semibold">Detailed Instructions &amp; Prompts *</label>
+              {{ form.description }}
+            </div>
+            <div class="col-md-6">
+              <label class="form-label small fw-semibold">Maximum Marks *</label>
+              {{ form.max_marks }}
+            </div>
+            <div class="col-md-6">
+              <label class="form-label small fw-semibold">Due Date (Optional)</label>
+              {{ form.due_date }}
+            </div>
+            <div class="col-12 mt-4 pt-3 border-top d-flex justify-content-between">
+              <a href="{% url 'course_detail' slug=course.slug %}" class="btn btn-outline-secondary rounded-pill px-4">Cancel</a>
+              <button type="submit" class="btn btn-primary rounded-pill px-5 fw-bold">Save Assignment</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,136 @@
+{% extends 'online_app/base.html' %}
+{% load static %}
+
+{% block title %}{{ lesson.title }} - {{ course.title }} - Online LMS{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'online_app/css/lessons.css' %}">
+{% endblock %}
+
+{% block content %}
+<!-- Top Learning Header -->
+<div class="bg-dark text-white py-3 border-bottom border-secondary">
+  <div class="container-fluid px-lg-4">
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
+      <div class="d-flex align-items-center gap-3">
+        <a href="{% url 'course_detail' slug=course.slug %}" class="btn btn-outline-light btn-sm rounded-pill">
+          <i class="bi bi-arrow-left me-1"></i> Course Overview
+        </a>
+        <div>
+          <h6 class="mb-0 fw-bold text-white text-truncate" style="max-width: 500px;">{{ course.title }}</h6>
+          <small class="text-secondary">Lesson {{ lesson.order }}: {{ lesson.title }}</small>
+        </div>
+      </div>
+
+      <!-- Course Progress Bar -->
+      <div class="d-flex align-items-center gap-3">
+        <div class="d-flex align-items-center gap-2">
+          <span class="small text-secondary">Progress:</span>
+          <span class="fw-bold small text-white" id="courseProgressText">{{ progress_percentage }}%</span>
+        </div>
+        <div class="progress" style="width: 140px; height: 8px;">
+          <div id="courseProgressBar" class="progress-bar bg-success rounded-pill" role="progressbar" style="width: {{ progress_percentage }}%;"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="container-fluid px-0">
+  <div class="lesson-player-container">
+    <!-- Left: Video & Content -->
+    <div class="lesson-main-content">
+      <div class="max-w-900 mx-auto">
+        <!-- Video Box -->
+        <div class="lesson-video-box mb-4">
+          {% if lesson.video_url %}
+            <iframe src="{{ lesson.video_url }}" title="{{ lesson.title }}" allowfullscreen></iframe>
+          {% else %}
+            <!-- Demo educational player -->
+            <iframe src="https://www.youtube.com/embed/rfscVS0vtbw" title="{{ lesson.title }}" allowfullscreen></iframe>
+          {% endif %}
+        </div>
+
+        <!-- Action & Meta -->
+        <div class="card-custom p-4 mb-4 bg-white">
+          <div class="d-flex flex-column flex-sm-row justify-content-between align-items-sm-center gap-3 pb-3 border-bottom">
+            <div>
+              <span class="badge bg-primary-subtle text-primary mb-1">
+                <i class="bi bi-clock me-1"></i> {{ lesson.duration_minutes }} minutes
+              </span>
+              <h2 class="h4 fw-bold mb-0 text-dark">{{ lesson.title }}</h2>
+            </div>
+
+            <!-- Complete Toggle -->
+            <div>
+              {% if is_enrolled %}
+                <button id="btnToggleLessonComplete" class="btn {% if is_completed %}btn-success{% else %}btn-outline-success{% endif %} rounded-pill px-4 fw-semibold" data-lesson-id="{{ lesson.id }}">
+                  <i id="lessonStatusIcon" class="bi {% if is_completed %}bi-check-circle-fill{% else %}bi-circle{% endif %} me-2"></i>
+                  <span id="lessonStatusText">{% if is_completed %}Completed{% else %}Mark as Completed{% endif %}</span>
+                </button>
+              {% else %}
+                <span class="badge bg-warning text-dark py-2 px-3 rounded-pill">Previewing Mode</span>
+              {% endif %}
+            </div>
+          </div>
+
+          <!-- Lesson Notes -->
+          <div class="pt-4">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <h5 class="fw-bold mb-0 text-dark"><i class="bi bi-journal-text text-primary me-2"></i>Study Notes &amp; Overview</h5>
+              {% if lesson.pdf_file %}
+                <a href="{{ lesson.pdf_file.url }}" target="_blank" class="btn btn-outline-danger btn-sm rounded-pill px-3">
+                  <i class="bi bi-file-earmark-pdf me-1"></i> Download PDF Materials
+                </a>
+              {% endif %}
+            </div>
+            <div class="text-secondary leading-relaxed" style="white-space: pre-line; line-height: 1.8;">
+              {{ lesson.content|default:"In this lesson, follow along with the video instruction, review the core concepts, and complete the exercise checkpoints before advancing to the next topic." }}
+            </div>
+          </div>
+        </div>
+
+        <!-- Navigation Buttons -->
+        <div class="d-flex justify-content-between align-items-center mb-5">
+          {% if prev_lesson %}
+            <a href="{% url 'lessons' course_slug=course.slug lesson_id=prev_lesson.id %}" class="btn btn-outline-secondary rounded-pill px-4">
+              <i class="bi bi-arrow-left me-1"></i> Previous Lesson
+            </a>
+          {% else %}
+            <div></div>
+          {% endif %}
+
+          {% if next_lesson %}
+            <a href="{% url 'lessons' course_slug=course.slug lesson_id=next_lesson.id %}" class="btn btn-primary rounded-pill px-4">
+              Next Lesson <i class="bi bi-arrow-right ms-1"></i>
+            </a>
+          {% else %}
+            <a href="{% url 'my_courses' %}" class="btn btn-success rounded-pill px-4">
+              Finish Course <i class="bi bi-check2-all ms-1"></i>
+            </a>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+    <!-- Right: Lesson Tree Sidebar -->
+    <div class="lesson-nav-sidebar">
+      <div class="p-3 border-bottom bg-light">
+        <h6 class="fw-bold mb-0 text-dark"><i class="bi bi-list-check text-primary me-2"></i>Curriculum Lessons</h6>
+      </div>
+
+      <div class="overflow-y-auto flex-grow-1">
+        {% for l in all_lessons %}
+          <a href="{% url 'lessons' course_slug=course.slug lesson_id=l.id %}" class="lesson-item-row {% if l.id == lesson.id %}active{% endif %}">
+            <div class="d-flex align-items-center text-truncate pe-2">
+              <i id="sideIcon-{{ l.id }}" class="bi {% if l.id in completed_lesson_ids %}bi-check-circle-fill text-success{% else %}bi-circle text-muted{% endif %} me-2"></i>
+              <span class="text-truncate">Lesson {{ l.order }}: {{ l.title }}</span>
+            </div>
+            <span class="badge bg-light text-muted border small">{{ l.duration_minutes }}m</span>
+          </a>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

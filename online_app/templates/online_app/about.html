@@ -1,0 +1,63 @@
+{% extends 'online_app/base.html' %}
+{% load static %}
+
+{% block title %}About Us - Online LMS{% endblock %}
+
+{% block content %}
+<div class="py-5" style="background: linear-gradient(135deg, var(--lavender) 0%, var(--lavender-light) 100%); border-bottom: 1px solid var(--lavender-dark);">
+  <div class="container text-center py-3">
+    <span class="badge bg-white text-primary px-3 py-2 rounded-pill fw-bold mb-2">Our Mission</span>
+    <h1 class="fw-bold display-5" style="color: var(--navy-dark);">Empowering Global Tech Education</h1>
+    <p class="text-muted lead max-w-700 mx-auto">We bridge the gap between academic theory and real-world software engineering practice.</p>
+  </div>
+</div>
+
+<div class="container py-5">
+  <div class="row align-items-center g-5 mb-5">
+    <div class="col-lg-6">
+      <span class="text-uppercase fw-bold small" style="color: var(--purple-primary);">Who We Are</span>
+      <h2 class="fw-bold mb-3">Accessible, Modern, and Practical Learning</h2>
+      <p class="text-muted leading-relaxed">
+        Online LMS was built to enable self-directed learners and academic institutions to deploy high-impact technical curriculum effortlessly.
+      </p>
+      <p class="text-muted leading-relaxed">
+        Our platform integrates video lessons, downloadable study PDFs, interactive quizzes with auto-grading, assignment submissions, and cryptographically verified certificates of completion.
+      </p>
+      <div class="row g-3 mt-2">
+        <div class="col-sm-6">
+          <div class="p-3 bg-white border rounded-3 shadow-sm">
+            <h6 class="fw-bold text-dark mb-1"><i class="bi bi-shield-check text-success me-2"></i>Accredited</h6>
+            <small class="text-muted">Industry aligned criteria</small>
+          </div>
+        </div>
+        <div class="col-sm-6">
+          <div class="p-3 bg-white border rounded-3 shadow-sm">
+            <h6 class="fw-bold text-dark mb-1"><i class="bi bi-clock-history text-primary me-2"></i>Self-Paced</h6>
+            <small class="text-muted">Learn on any device, anytime</small>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-6 text-center">
+      <img src="{% static 'online_app/images/hero.png' %}" alt="Classroom" class="img-fluid rounded-4 shadow border border-2 border-white">
+    </div>
+  </div>
+
+  <div class="text-center mb-5">
+    <h3 class="fw-bold">Meet Our Leadership &amp; Instructors</h3>
+  </div>
+
+  <div class="row g-4 justify-content-center">
+    {% for inst in instructors %}
+      <div class="col-6 col-md-3 text-center">
+        <div class="card-custom p-4 h-100 bg-white">
+          <img src="{{ inst.profile.get_avatar_url }}" alt="{{ inst.username }}" class="rounded-circle mb-3 border border-2 border-primary" width="80" height="80" style="object-fit: cover;">
+          <h6 class="fw-bold text-dark mb-1">{{ inst.get_full_name|default:inst.username }}</h6>
+          <p class="text-muted small mb-0">{{ inst.profile.headline|default:"Senior Instructor" }}</p>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

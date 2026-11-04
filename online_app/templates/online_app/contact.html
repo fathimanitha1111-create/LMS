@@ -1,0 +1,91 @@
+{% extends 'online_app/base.html' %}
+{% load static %}
+
+{% block title %}Contact Support - Online LMS{% endblock %}
+
+{% block content %}
+<div class="py-5" style="background: linear-gradient(135deg, var(--lavender) 0%, var(--lavender-light) 100%); border-bottom: 1px solid var(--lavender-dark);">
+  <div class="container text-center py-3">
+    <h1 class="fw-bold display-5" style="color: var(--navy-dark);">Contact &amp; Support</h1>
+    <p class="text-muted lead max-w-700 mx-auto">Have inquiries about curriculum, technical questions, or corporate training? We are here to help.</p>
+  </div>
+</div>
+
+<div class="container py-5">
+  <div class="row g-5">
+    <div class="col-lg-5">
+      <h3 class="fw-bold mb-4">Get In Touch</h3>
+      <p class="text-muted mb-4">Our dedicated education support team is available Monday through Friday to answer your questions.</p>
+
+      <div class="card-custom p-4 mb-3 bg-white">
+        <div class="d-flex align-items-center gap-3">
+          <div class="rounded-circle p-3 d-flex align-items-center justify-content-center" style="background-color: var(--lavender); color: var(--purple-primary); width: 48px; height: 48px;">
+            <i class="bi bi-envelope-at-fill fs-5"></i>
+          </div>
+          <div>
+            <h6 class="fw-bold mb-0">Email Inquiries</h6>
+            <small class="text-muted">support@eduvibe-lms.edu</small>
+          </div>
+        </div>
+      </div>
+
+      <div class="card-custom p-4 mb-3 bg-white">
+        <div class="d-flex align-items-center gap-3">
+          <div class="rounded-circle p-3 d-flex align-items-center justify-content-center" style="background-color: var(--blue-light); color: var(--blue-dark); width: 48px; height: 48px;">
+            <i class="bi bi-geo-alt-fill fs-5"></i>
+          </div>
+          <div>
+            <h6 class="fw-bold mb-0">Campus Location</h6>
+            <small class="text-muted">Tech Learning Center, 4th Floor</small>
+          </div>
+        </div>
+      </div>
+
+      <div class="card-custom p-4 bg-white">
+        <div class="d-flex align-items-center gap-3">
+          <div class="rounded-circle p-3 d-flex align-items-center justify-content-center" style="background-color: #DCFCE7; color: #16A34A; width: 48px; height: 48px;">
+            <i class="bi bi-clock-fill fs-5"></i>
+          </div>
+          <div>
+            <h6 class="fw-bold mb-0">Operating Hours</h6>
+            <small class="text-muted">Monday - Friday: 9am - 6pm UTC</small>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Contact Form -->
+    <div class="col-lg-7">
+      <div class="card-custom p-4 p-md-5 bg-white">
+        <h3 class="fw-bold mb-3">Send a Message</h3>
+        <form method="POST">
+          {% csrf_token %}
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label class="form-label fw-semibold small">Full Name *</label>
+              {{ form.name }}
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-semibold small">Email Address *</label>
+              {{ form.email }}
+            </div>
+            <div class="col-12">
+              <label class="form-label fw-semibold small">Subject *</label>
+              {{ form.subject }}
+            </div>
+            <div class="col-12">
+              <label class="form-label fw-semibold small">Your Message *</label>
+              {{ form.message }}
+            </div>
+            <div class="col-12 mt-4">
+              <button type="submit" class="btn btn-primary rounded-pill px-5 fw-bold">
+                <i class="bi bi-send-fill me-1"></i> Send Message
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

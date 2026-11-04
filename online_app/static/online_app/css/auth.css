@@ -1,0 +1,31 @@
+/* Authentication Forms (Login / Register) */
+
+.auth-card {
+  background: var(--white);
+  border: 1px solid var(--lavender-dark);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  padding: 2.5rem;
+}
+
+.auth-header-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 16px;
+  background-color: var(--lavender);
+  color: var(--purple-primary);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.75rem;
+  margin-bottom: 1rem;
+}
+
+.auth-hint-box {
+  background: var(--lavender-light);
+  border: 1px solid var(--lavender-dark);
+  border-radius: var(--radius-sm);
+  padding: 0.9rem;
+  font-size: 0.8rem;
+  color: #475569;
+}

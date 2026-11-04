@@ -1,0 +1,102 @@
+{% extends 'online_app/base.html' %}
+{% load static %}
+
+{% block title %}Assignment: {{ assignment.title }} - Online LMS{% endblock %}
+
+{% block content %}
+<div class="py-4" style="background: linear-gradient(135deg, var(--lavender) 0%, var(--lavender-light) 100%); border-bottom: 1px solid var(--lavender-dark);">
+  <div class="container">
+    <a href="{% url 'course_detail' slug=assignment.course.slug %}" class="small text-muted text-decoration-none mb-1 d-inline-block">
+      <i class="bi bi-arrow-left"></i> Back to {{ assignment.course.title }}
+    </a>
+    <h1 class="fw-bold h2 mb-0" style="color: var(--navy-dark);">{{ assignment.title }}</h1>
+  </div>
+</div>
+
+<div class="container py-5">
+  <div class="row g-5">
+    <!-- Assignment Details & Prompt -->
+    <div class="col-lg-7">
+      <div class="card-custom p-4 mb-4 bg-white">
+        <div class="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom">
+          <span class="badge bg-primary px-3 py-2 rounded-pill">Max Marks: {{ assignment.max_marks }}</span>
+          {% if assignment.due_date %}
+            <span class="text-danger small fw-semibold"><i class="bi bi-clock me-1"></i>Due: {{ assignment.due_date|date:"M d, Y, h:i A" }}</span>
+          {% endif %}
+        </div>
+
+        <h4 class="fw-bold mb-3 text-dark">Assignment Description</h4>
+        <div class="text-secondary leading-relaxed" style="white-space: pre-line; line-height: 1.8;">
+          {{ assignment.description }}
+        </div>
+      </div>
+
+      <!-- Submission Status & Grade Review (if already submitted) -->
+      {% if existing_submission %}
+        <div class="card-custom p-4 bg-white">
+          <h5 class="fw-bold mb-3 text-dark"><i class="bi bi-file-earmark-check-fill text-success me-2"></i>Submission Status</h5>
+          <div class="p-3 bg-light rounded-3 mb-3">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <span class="fw-bold text-dark">Status:</span>
+              {% if existing_submission.marks_awarded is not None %}
+                <span class="badge bg-success fs-6">Graded ({{ existing_submission.marks_awarded }}/{{ assignment.max_marks }})</span>
+              {% else %}
+                <span class="badge bg-warning text-dark fs-6">Submitted (Pending Review)</span>
+              {% endif %}
+            </div>
+            <small class="text-muted d-block">Submitted on: {{ existing_submission.submitted_at|date:"M d, Y h:i A" }}</small>
+          </div>
+
+          {% if existing_submission.feedback %}
+            <div class="p-3 bg-info-subtle rounded-3 mb-3">
+              <h6 class="fw-bold text-dark mb-1"><i class="bi bi-chat-quote-fill me-1"></i>Instructor Feedback:</h6>
+              <p class="mb-0 text-muted small">{{ existing_submission.feedback }}</p>
+            </div>
+          {% endif %}
+
+          <div class="mb-3">
+            <h6 class="fw-bold text-dark small">Your Written Answer:</h6>
+            <div class="p-3 border rounded-3 bg-white small text-secondary">
+              {{ existing_submission.submission_text|default:"No written text provided." }}
+            </div>
+          </div>
+
+          {% if existing_submission.submission_file %}
+            <div class="mb-3">
+              <h6 class="fw-bold text-dark small">Attached File:</h6>
+              <a href="{{ existing_submission.submission_file.url }}" target="_blank" class="btn btn-outline-primary btn-sm rounded-pill px-3">
+                <i class="bi bi-download me-1"></i> Download Attached Submission File
+              </a>
+            </div>
+          {% endif %}
+        </div>
+      {% endif %}
+    </div>
+
+    <!-- Submission Form -->
+    <div class="col-lg-5">
+      <div class="card-custom p-4 bg-white sticky-top" style="top: 85px;">
+        <h4 class="fw-bold mb-3 text-dark">
+          {% if existing_submission %}Resubmit Assignment{% else %}Submit Solution{% endif %}
+        </h4>
+        <form method="POST" enctype="multipart/form-data">
+          {% csrf_token %}
+          <div class="mb-3">
+            <label class="form-label fw-semibold small">Written Response / Code / Notes</label>
+            {{ form.submission_text }}
+          </div>
+
+          <div class="mb-4">
+            <label class="form-label fw-semibold small">Upload File (ZIP, PDF, or Doc)</label>
+            {{ form.submission_file }}
+          </div>
+
+          <button type="submit" class="btn btn-primary btn-lg w-100 rounded-pill fw-bold shadow-sm">
+            <i class="bi bi-upload me-2"></i> Submit Assignment
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

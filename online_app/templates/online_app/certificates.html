@@ -1,0 +1,98 @@
+{% extends 'online_app/base.html' %}
+{% load static %}
+
+{% block title %}Certificates of Completion - Online LMS{% endblock %}
+
+{% block content %}
+<div class="py-4" style="background: linear-gradient(135deg, var(--lavender) 0%, var(--lavender-light) 100%); border-bottom: 1px solid var(--lavender-dark);">
+  <div class="container">
+    <h1 class="fw-bold h2 mb-1" style="color: var(--navy-dark);">Verified Certificates</h1>
+    <p class="text-muted small mb-0">Showcase your verifiable credentials earned upon course completion</p>
+  </div>
+</div>
+
+<div class="container py-5">
+  {% if active_cert %}
+    <!-- Detailed Printable Certificate View -->
+    <div class="card-custom p-5 bg-white border border-3 border-primary shadow-lg mb-5 text-center position-relative" id="printableCertificate" style="max-width: 850px; margin: 0 auto; background: radial-gradient(circle at top right, #faf5ff 0%, #ffffff 80%);">
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <img src="{% static 'online_app/images/logo.png' %}" alt="LMS Logo" width="55" height="55">
+        <div class="text-end">
+          <span class="badge bg-primary-subtle text-primary fw-bold px-3 py-2 rounded-pill">Official Credential</span>
+          <small class="d-block text-muted mt-1">Verification Code: <strong>{{ active_cert.certificate_code }}</strong></small>
+        </div>
+      </div>
+
+      <div class="py-4">
+        <span class="text-uppercase fw-bold letter-spacing-2 text-muted" style="letter-spacing: 2px;">Certificate of Completion</span>
+        <h2 class="display-6 fw-bold mt-2 mb-4" style="color: var(--purple-primary);">Online Learning Management Academy</h2>
+        <p class="text-muted mb-2">This is proudly awarded to</p>
+        <h3 class="display-6 fw-bold text-dark mb-3" style="text-decoration: underline; text-decoration-color: var(--purple-soft);">{{ active_cert.user.get_full_name|default:active_cert.user.username }}</h3>
+        <p class="lead text-secondary mb-4 max-w-700 mx-auto">
+          for successfully fulfilling all curriculum requirements, interactive exercises, and examinations for
+        </p>
+        <h4 class="fw-bold text-dark mb-4">{{ active_cert.course.title }}</h4>
+      </div>
+
+      <div class="d-flex justify-content-between align-items-end pt-4 border-top">
+        <div class="text-start">
+          <small class="text-muted d-block">Issued Date:</small>
+          <span class="fw-bold">{{ active_cert.issued_date|date:"F d, Y" }}</span>
+        </div>
+        <div>
+          <button onclick="window.print()" class="btn btn-outline-primary rounded-pill btn-sm px-4">
+            <i class="bi bi-printer me-1"></i> Print / Save PDF
+          </button>
+        </div>
+        <div class="text-end">
+          <small class="text-muted d-block">Authorized Signature:</small>
+          <span class="fw-bold font-monospace text-primary">EduVibe Academic Board</span>
+        </div>
+      </div>
+    </div>
+  {% endif %}
+
+  <!-- Certificates List -->
+  <div class="row g-4">
+    <div class="col-12">
+      <h4 class="fw-bold mb-3 text-dark">Your Earned Certificates ({{ certificates.count }})</h4>
+    </div>
+
+    {% for cert in certificates %}
+      <div class="col-md-6 col-lg-4">
+        <div class="card-custom p-4 bg-white h-100 d-flex flex-column">
+          <div class="d-flex align-items-center gap-3 mb-3">
+            <div class="rounded-circle p-3 d-flex align-items-center justify-content-center" style="background-color: var(--lavender); color: var(--purple-primary); width: 50px; height: 50px;">
+              <i class="bi bi-award-fill fs-4"></i>
+            </div>
+            <div>
+              <span class="badge bg-success-subtle text-success small">Verified</span>
+              <h6 class="fw-bold text-dark mb-0 mt-1">{{ cert.course.title }}</h6>
+            </div>
+          </div>
+
+          <div class="text-muted small mb-3">
+            <div>Code: <code>{{ cert.certificate_code }}</code></div>
+            <div>Issued: {{ cert.issued_date|date:"M d, Y" }}</div>
+          </div>
+
+          <div class="mt-auto pt-3 border-top">
+            <a href="?code={{ cert.certificate_code }}" class="btn btn-primary btn-sm rounded-pill w-100 fw-semibold">
+              <i class="bi bi-eye me-1"></i> View Full Certificate
+            </a>
+          </div>
+        </div>
+      </div>
+    {% empty %}
+      <div class="col-12 text-center py-5">
+        <div class="card-custom p-5 bg-white">
+          <i class="bi bi-award fs-1 text-muted mb-2"></i>
+          <h4 class="fw-bold">No Certificates Earned Yet</h4>
+          <p class="text-muted small mb-3">Complete 100% of lessons in any enrolled course to automatically receive an accredited certificate.</p>
+          <a href="{% url 'my_courses' %}" class="btn btn-primary rounded-pill px-4">Continue Learning</a>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

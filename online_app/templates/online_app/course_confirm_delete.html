@@ -1,0 +1,30 @@
+{% extends 'online_app/base.html' %}
+{% load static %}
+
+{% block title %}Delete Course - Online LMS{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-md-6">
+      <div class="card-custom p-4 p-md-5 bg-white text-center">
+        <div class="rounded-circle bg-danger-subtle text-danger mx-auto mb-3 d-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
+          <i class="bi bi-exclamation-triangle-fill fs-2"></i>
+        </div>
+        <h3 class="fw-bold text-dark mb-2">Delete Course?</h3>
+        <p class="text-muted mb-4">
+          Are you sure you want to permanently delete <strong>"{{ course.title }}"</strong>? All associated lessons, quizzes, assignments, and student progress records will be removed.
+        </p>
+
+        <form method="POST">
+          {% csrf_token %}
+          <div class="d-flex justify-content-center gap-3">
+            <a href="{% url 'instructor_dashboard' %}" class="btn btn-outline-secondary rounded-pill px-4">Cancel</a>
+            <button type="submit" class="btn btn-danger rounded-pill px-4 fw-bold">Yes, Delete Course</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

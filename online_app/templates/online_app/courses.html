@@ -1,0 +1,153 @@
+{% extends 'online_app/base.html' %}
+{% load static %}
+
+{% block title %}All Courses - Online LMS{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'online_app/css/courses.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="py-4" style="background: linear-gradient(135deg, var(--lavender) 0%, var(--lavender-light) 100%); border-bottom: 1px solid var(--lavender-dark);">
+  <div class="container">
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
+      <div>
+        <h1 class="fw-bold h2 mb-1" style="color: var(--navy-dark);">Browse Course Library</h1>
+        <p class="text-muted small mb-0">
+          {% if selected_category %}
+            Category: <span class="badge bg-primary">{{ selected_category.name }}</span>
+          {% elif search_query %}
+            Results for: "<span class="text-primary fw-bold">{{ search_query }}</span>"
+          {% else %}
+            Find your next certificate program and start learning today
+          {% endif %}
+        </p>
+      </div>
+      <div class="badge bg-white text-dark border p-2 px-3 rounded-pill fw-semibold shadow-sm">
+        <i class="bi bi-mortarboard text-primary me-1"></i> {{ total_results }} Courses Available
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="container py-5">
+  <div class="row g-4">
+    <!-- Filters Sidebar -->
+    <div class="col-lg-3">
+      <div class="card-custom p-4 bg-white sticky-top" style="top: 85px;">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h5 class="fw-bold mb-0 text-dark"><i class="bi bi-funnel me-1 text-primary"></i>Filters</h5>
+          <a href="{% url 'courses' %}" class="small text-muted text-decoration-none">Reset</a>
+        </div>
+
+        <form method="GET">
+          <!-- Search input inside filter -->
+          <div class="mb-4">
+            <label class="form-label small fw-bold text-uppercase">Search Keyword</label>
+            <div class="input-group">
+              <input type="text" name="q" class="form-control form-control-sm" placeholder="e.g. Django, Python..." value="{{ search_query }}">
+              <button class="btn btn-outline-primary btn-sm" type="submit"><i class="bi bi-search"></i></button>
+            </div>
+          </div>
+
+          <!-- Category filter -->
+          <div class="mb-4">
+            <label class="form-label small fw-bold text-uppercase">Categories</label>
+            <div class="list-group list-group-flush border-0">
+              <a href="{% url 'courses' %}{% if search_query %}?q={{ search_query }}{% endif %}" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center px-2 py-2 border-0 rounded-2 {% if not selected_category %}bg-light text-primary fw-bold{% endif %}">
+                <span>All Categories</span>
+              </a>
+              {% for cat in categories %}
+                <a href="{% url 'courses' %}?category={{ cat.slug }}{% if search_query %}&q={{ search_query }}{% endif %}{% if selected_level %}&level={{ selected_level }}{% endif %}" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center px-2 py-2 border-0 rounded-2 {% if selected_category.slug == cat.slug %}bg-light text-primary fw-bold{% endif %}">
+                  <span><i class="bi {{ cat.icon }} me-2 text-muted"></i>{{ cat.name }}</span>
+                  <span class="badge rounded-pill bg-light text-muted border">{{ cat.get_course_count }}</span>
+                </a>
+              {% endfor %}
+            </div>
+          </div>
+
+          <!-- Skill Level filter -->
+          <div class="mb-4">
+            <label class="form-label small fw-bold text-uppercase">Skill Level</label>
+            <select name="level" class="form-select form-select-sm" onchange="this.form.submit()">
+              <option value="all" {% if selected_level == 'all' or not selected_level %}selected{% endif %}>All Levels</option>
+              <option value="beginner" {% if selected_level == 'beginner' %}selected{% endif %}>Beginner</option>
+              <option value="intermediate" {% if selected_level == 'intermediate' %}selected{% endif %}>Intermediate</option>
+              <option value="advanced" {% if selected_level == 'advanced' %}selected{% endif %}>Advanced</option>
+            </select>
+          </div>
+
+          <!-- Price filter -->
+          <div class="mb-3">
+            <label class="form-label small fw-bold text-uppercase">Price</label>
+            <div class="form-check">
+              <input class="form-check-input" type="radio" name="price" id="pAll" value="" {% if not selected_price %}checked{% endif %} onchange="this.form.submit()">
+              <label class="form-check-label small" for="pAll">All Prices</label>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input" type="radio" name="price" id="pFree" value="free" {% if selected_price == 'free' %}checked{% endif %} onchange="this.form.submit()">
+              <label class="form-check-label small" for="pFree">Free Courses Only</label>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input" type="radio" name="price" id="pPaid" value="paid" {% if selected_price == 'paid' %}checked{% endif %} onchange="this.form.submit()">
+              <label class="form-check-label small" for="pPaid">Premium Courses</label>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Course Grid -->
+    <div class="col-lg-9">
+      <div class="row g-4">
+        {% for course in courses %}
+          <div class="col-12 col-md-6 col-xl-4">
+            <div class="course-card">
+              <div class="course-thumb-wrap">
+                <img src="{{ course.get_thumbnail_url }}" alt="{{ course.title }}" class="course-thumb-img">
+                <span class="course-level-tag">{{ course.get_level_display }}</span>
+              </div>
+              <div class="course-card-content">
+                <span class="course-cat-title">{{ course.category.name|default:"General" }}</span>
+                <h5 class="fw-bold text-dark mb-2">
+                  <a href="{% url 'course_detail' slug=course.slug %}" class="text-decoration-none text-dark">{{ course.title }}</a>
+                </h5>
+                <p class="text-muted small mb-3 flex-grow-1" style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
+                  {{ course.short_description }}
+                </p>
+
+                <div class="d-flex align-items-center gap-2 mb-3">
+                  <img src="{{ course.instructor.profile.get_avatar_url }}" alt="{{ course.instructor.username }}" class="rounded-circle" width="28" height="28" style="object-fit: cover;">
+                  <span class="small text-muted">{{ course.instructor.get_full_name|default:course.instructor.username }}</span>
+                </div>
+
+                <div class="d-flex justify-content-between align-items-center pt-3 border-top">
+                  <div class="text-muted small">
+                    <i class="bi bi-clock me-1"></i>{{ course.duration_hours }}h
+                  </div>
+                  <div>
+                    {% if course.is_free %}
+                      <span class="badge bg-success-subtle text-success fs-6 fw-bold">Free</span>
+                    {% else %}
+                      <span class="fw-bold fs-5" style="color: var(--navy-dark);">${{ course.price }}</span>
+                    {% endif %}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        {% empty %}
+          <div class="col-12 text-center py-5">
+            <div class="card-custom p-5 bg-white">
+              <i class="bi bi-search fs-1 text-muted mb-2"></i>
+              <h4 class="fw-bold">No Courses Match Your Criteria</h4>
+              <p class="text-muted small mb-4">Try clearing filters or searching with different keywords.</p>
+              <a href="{% url 'courses' %}" class="btn btn-primary rounded-pill px-4">Reset All Filters</a>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

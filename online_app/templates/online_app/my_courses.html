@@ -1,0 +1,90 @@
+{% extends 'online_app/base.html' %}
+{% load static %}
+
+{% block title %}My Courses - Online LMS{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'online_app/css/courses.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="py-4" style="background: linear-gradient(135deg, var(--lavender) 0%, var(--lavender-light) 100%); border-bottom: 1px solid var(--lavender-dark);">
+  <div class="container">
+    <div class="d-flex justify-content-between align-items-center">
+      <div>
+        <h1 class="fw-bold h2 mb-1" style="color: var(--navy-dark);">My Enrolled Courses</h1>
+        <p class="text-muted small mb-0">Track your progress and continue where you left off</p>
+      </div>
+      <a href="{% url 'courses' %}" class="btn btn-primary rounded-pill btn-sm px-3">
+        <i class="bi bi-plus-lg me-1"></i> Enroll in New Course
+      </a>
+    </div>
+  </div>
+</div>
+
+<div class="container py-5">
+  <div class="row g-4">
+    {% for enrollment in enrollments %}
+      <div class="col-12 col-md-6 col-xl-4">
+        <div class="course-card">
+          <div class="course-thumb-wrap">
+            <img src="{{ enrollment.course.get_thumbnail_url }}" alt="{{ enrollment.course.title }}" class="course-thumb-img">
+            {% if enrollment.completed %}
+              <span class="badge bg-success position-absolute top-0 end-0 m-3 px-3 py-2 rounded-pill">Completed</span>
+            {% else %}
+              <span class="badge bg-primary position-absolute top-0 end-0 m-3 px-3 py-2 rounded-pill">In Progress</span>
+            {% endif %}
+          </div>
+
+          <div class="course-card-content">
+            <span class="course-cat-title">{{ enrollment.course.category.name|default:"General" }}</span>
+            <h5 class="fw-bold text-dark mb-2">
+              <a href="{% url 'course_detail' slug=enrollment.course.slug %}" class="text-decoration-none text-dark">{{ enrollment.course.title }}</a>
+            </h5>
+
+            <div class="my-3">
+              <div class="d-flex justify-content-between small text-muted mb-1">
+                <span>Progress</span>
+                <span class="fw-bold text-dark">{{ enrollment.get_progress_percentage }}%</span>
+              </div>
+              <div class="progress" style="height: 8px;">
+                <div class="progress-bar {% if enrollment.completed %}bg-success{% else %}bg-primary{% endif %} rounded-pill" role="progressbar" style="width: {{ enrollment.get_progress_percentage }}%;"></div>
+              </div>
+            </div>
+
+            <div class="d-flex justify-content-between align-items-center text-muted small mb-3">
+              <span><i class="bi bi-check2-circle text-success me-1"></i>{{ enrollment.get_completed_lessons_count }}/{{ enrollment.course.get_total_lessons }} Lessons</span>
+              <span>Enrolled: {{ enrollment.enrolled_at|date:"M d, Y" }}</span>
+            </div>
+
+            <div class="mt-auto pt-3 border-top d-flex gap-2">
+              {% with first_lesson=enrollment.course.lessons.first %}
+                {% if first_lesson %}
+                  <a href="{% url 'lessons' course_slug=enrollment.course.slug lesson_id=first_lesson.id %}" class="btn btn-primary btn-sm rounded-pill w-100 fw-semibold">
+                    {% if enrollment.completed %}Review Course{% else %}Resume Learning{% endif %}
+                  </a>
+                {% endif %}
+              {% endwith %}
+
+              {% if enrollment.completed %}
+                <a href="{% url 'certificates' %}" class="btn btn-outline-success btn-sm rounded-pill px-3" title="View Certificate">
+                  <i class="bi bi-award-fill"></i>
+                </a>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      </div>
+    {% empty %}
+      <div class="col-12 text-center py-5">
+        <div class="card-custom p-5 bg-white">
+          <i class="bi bi-journal-x fs-1 text-muted mb-2"></i>
+          <h4 class="fw-bold">You Have No Active Enrollments</h4>
+          <p class="text-muted small mb-3">Browse our extensive course collection and pick your first certificate topic.</p>
+          <a href="{% url 'courses' %}" class="btn btn-primary rounded-pill px-4">Browse Catalog</a>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

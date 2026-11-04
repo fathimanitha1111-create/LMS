@@ -1,0 +1,130 @@
+{% extends 'online_app/base.html' %}
+{% load static %}
+
+{% block title %}Quiz: {{ quiz.title }} - Online LMS{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'online_app/css/quiz.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="py-4" style="background: linear-gradient(135deg, var(--lavender) 0%, var(--lavender-light) 100%); border-bottom: 1px solid var(--lavender-dark);">
+  <div class="container">
+    <div class="d-flex justify-content-between align-items-center">
+      <div>
+        <a href="{% url 'course_detail' slug=quiz.course.slug %}" class="small text-muted text-decoration-none mb-1 d-inline-block">
+          <i class="bi bi-arrow-left"></i> Back to {{ quiz.course.title }}
+        </a>
+        <h1 class="fw-bold h2 mb-0" style="color: var(--navy-dark);">{{ quiz.title }}</h1>
+      </div>
+      <div class="badge bg-white text-dark border p-2 px-3 rounded-pill fw-semibold shadow-sm">
+        Pass Mark: {{ quiz.pass_mark }}%
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-lg-8">
+      <!-- Quiz Result Summary Card if completed or submitted -->
+      {% if submitted or user_result %}
+        <div class="card-custom p-4 text-center bg-white mb-4">
+          <h4 class="fw-bold mb-3">Your Quiz Score</h4>
+          <div class="quiz-result-score-circle">
+            {% if submitted %}
+              {{ percentage }}%
+            {% else %}
+              {{ user_result.percentage }}%
+            {% endif %}
+          </div>
+
+          {% if submitted %}
+            {% if passed %}
+              <div class="alert alert-success d-inline-block px-4 py-2 rounded-pill fw-bold mb-3">
+                <i class="bi bi-check-circle-fill me-1"></i> Congratulations! You passed this quiz.
+              </div>
+            {% else %}
+              <div class="alert alert-danger d-inline-block px-4 py-2 rounded-pill fw-bold mb-3">
+                <i class="bi bi-x-circle-fill me-1"></i> You did not reach the {{ quiz.pass_mark }}% passing threshold. You can retry anytime.
+              </div>
+            {% endif %}
+            <p class="text-muted small">You answered <strong>{{ score }}</strong> out of <strong>{{ total }}</strong> questions correctly.</p>
+          {% else %}
+            {% if user_result.passed %}
+              <div class="alert alert-success d-inline-block px-4 py-2 rounded-pill fw-bold mb-3">
+                <i class="bi bi-check-circle-fill me-1"></i> Passed on {{ user_result.date_taken|date:"M d, Y" }}
+              </div>
+            {% else %}
+              <div class="alert alert-danger d-inline-block px-4 py-2 rounded-pill fw-bold mb-3">
+                <i class="bi bi-x-circle-fill me-1"></i> Score: {{ user_result.score }}/{{ user_result.total_marks }} ({{ user_result.percentage }}%)
+              </div>
+            {% endif %}
+          {% endif %}
+        </div>
+      {% endif %}
+
+      <!-- Question List Form -->
+      <div class="quiz-card">
+        <form method="POST" id="quizForm">
+          {% csrf_token %}
+          <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom">
+            <h5 class="fw-bold text-dark mb-0">Total Questions: {{ questions.count }}</h5>
+            <small class="text-muted">Select one correct answer per question</small>
+          </div>
+
+          {% for q in questions %}
+            <div class="question-block">
+              <h6 class="fw-bold text-dark mb-3">
+                <span class="badge bg-primary me-2">Q{{ forloop.counter }}</span>
+                {{ q.question_text }}
+              </h6>
+
+              <div class="options-container">
+                <label class="quiz-option-label" for="q_{{ q.id }}_1">
+                  <input class="form-check-input me-2" type="radio" name="question_{{ q.id }}" id="q_{{ q.id }}_1" value="1" required>
+                  {{ q.option1 }}
+                </label>
+                <label class="quiz-option-label" for="q_{{ q.id }}_2">
+                  <input class="form-check-input me-2" type="radio" name="question_{{ q.id }}" id="q_{{ q.id }}_2" value="2">
+                  {{ q.option2 }}
+                </label>
+                <label class="quiz-option-label" for="q_{{ q.id }}_3">
+                  <input class="form-check-input me-2" type="radio" name="question_{{ q.id }}" id="q_{{ q.id }}_3" value="3">
+                  {{ q.option3 }}
+                </label>
+                <label class="quiz-option-label" for="q_{{ q.id }}_4">
+                  <input class="form-check-input me-2" type="radio" name="question_{{ q.id }}" id="q_{{ q.id }}_4" value="4">
+                  {{ q.option4 }}
+                </label>
+              </div>
+
+              {% if submitted and q.explanation %}
+                <div class="p-3 bg-light rounded-3 mt-2 text-muted small">
+                  <strong>Explanation:</strong> {{ q.explanation }}
+                </div>
+              {% endif %}
+            </div>
+          {% empty %}
+            <div class="p-4 text-center text-muted">
+              No questions have been configured for this quiz yet.
+            </div>
+          {% endfor %}
+
+          {% if questions %}
+            <div class="text-center pt-3">
+              <button type="submit" class="btn btn-primary btn-lg rounded-pill px-5 fw-bold shadow-sm">
+                Submit Quiz Answers
+              </button>
+            </div>
+          {% endif %}
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'online_app/js/quiz.js' %}"></script>
+{% endblock %}

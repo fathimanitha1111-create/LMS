@@ -1,0 +1,17 @@
+/* Profile Page Styles */
+
+.profile-avatar-large {
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  border: 3px solid var(--purple-primary);
+  object-fit: cover;
+}
+
+.profile-section-title {
+  color: var(--purple-primary);
+  font-weight: 700;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid var(--lavender);
+}

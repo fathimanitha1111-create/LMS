@@ -1,0 +1,65 @@
+{% extends 'online_app/base.html' %}
+{% load static %}
+
+{% block title %}Add Question - {{ quiz.title }}{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-lg-7">
+      <div class="card-custom p-4 p-md-5 bg-white">
+        <div class="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom">
+          <div>
+            <h3 class="fw-bold mb-0 text-dark">Add Question</h3>
+            <small class="text-muted">Quiz: {{ quiz.title }} (Current Questions: {{ quiz.questions.count }})</small>
+          </div>
+          <a href="{% url 'course_detail' slug=quiz.course.slug %}" class="btn btn-outline-secondary rounded-pill btn-sm px-3">Finish &amp; Return</a>
+        </div>
+
+        <form method="POST">
+          {% csrf_token %}
+          <div class="row g-3">
+            <div class="col-12">
+              <label class="form-label small fw-semibold">Question Text *</label>
+              {{ form.question_text }}
+            </div>
+            <div class="col-md-6">
+              <label class="form-label small fw-semibold">Option 1 *</label>
+              {{ form.option1 }}
+            </div>
+            <div class="col-md-6">
+              <label class="form-label small fw-semibold">Option 2 *</label>
+              {{ form.option2 }}
+            </div>
+            <div class="col-md-6">
+              <label class="form-label small fw-semibold">Option 3 *</label>
+              {{ form.option3 }}
+            </div>
+            <div class="col-md-6">
+              <label class="form-label small fw-semibold">Option 4 *</label>
+              {{ form.option4 }}
+            </div>
+            <div class="col-md-6">
+              <label class="form-label small fw-semibold">Correct Option *</label>
+              {{ form.correct_option }}
+            </div>
+            <div class="col-12">
+              <label class="form-label small fw-semibold">Explanation (Optional)</label>
+              {{ form.explanation }}
+            </div>
+
+            <div class="col-12 mt-4 pt-3 border-top d-flex justify-content-between">
+              <button type="submit" name="save_and_add" class="btn btn-outline-primary rounded-pill px-4">
+                Save &amp; Add Another
+              </button>
+              <button type="submit" class="btn btn-primary rounded-pill px-5 fw-bold">
+                Save &amp; Done
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

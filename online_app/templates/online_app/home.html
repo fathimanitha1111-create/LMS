@@ -1,0 +1,254 @@
+{% extends 'online_app/base.html' %}
+{% load static %}
+
+{% block title %}EduVibe LMS - Discover, Learn &amp; Master Skills{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'online_app/css/home.css' %}">
+<link rel="stylesheet" href="{% static 'online_app/css/courses.css' %}">
+{% endblock %}
+
+{% block content %}
+<!-- ==========================================================================
+     Hero Section
+     ========================================================================== -->
+<section class="hero-lms">
+  <div class="container position-relative">
+    <div class="row align-items-center g-5">
+      <div class="col-lg-6">
+        <div class="hero-badge mb-3">
+          <i class="bi bi-mortarboard-fill"></i> Learn From Industry Leaders
+        </div>
+        <h1 class="hero-title mb-3">
+          Elevate Your Career with <span style="color: var(--purple-primary);">Certified</span> Online Courses
+        </h1>
+        <p class="hero-subtitle mb-4">
+          Access high-impact curriculum in Python Django, Full-Stack Web Development, Artificial Intelligence, and Cloud Architecture. Self-paced, project-driven, and accredited.
+        </p>
+
+        <!-- Search Bar -->
+        <form action="{% url 'courses' %}" method="GET" class="mb-4">
+          <div class="search-box-home">
+            <i class="bi bi-search text-muted fs-5 me-2"></i>
+            <input type="text" name="q" placeholder="What do you want to learn today?">
+            <button type="submit" class="btn btn-primary rounded-pill px-4">Search</button>
+          </div>
+        </form>
+
+        <div class="d-flex flex-wrap align-items-center gap-4 text-muted small">
+          <div><i class="bi bi-check-circle-fill text-success me-1"></i> Free Lifetime Access</div>
+          <div><i class="bi bi-check-circle-fill text-success me-1"></i> Interactive Quizzes</div>
+          <div><i class="bi bi-check-circle-fill text-success me-1"></i> Verified Certificates</div>
+        </div>
+      </div>
+
+      <div class="col-lg-6 text-center">
+        <img src="{% static 'online_app/images/hero.png' %}" alt="Online Learning Classroom" class="img-fluid rounded-4 shadow-lg border border-2 border-white">
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==========================================================================
+     Statistics Section
+     ========================================================================== -->
+<section class="py-4 bg-white border-bottom">
+  <div class="container">
+    <div class="row g-4 justify-content-center">
+      <div class="col-6 col-md-3">
+        <div class="stat-item">
+          <div class="stat-num counter-anim" data-target="{{ total_students }}">{{ total_students }}</div>
+          <div class="stat-text">Active Students</div>
+        </div>
+      </div>
+      <div class="col-6 col-md-3">
+        <div class="stat-item">
+          <div class="stat-num counter-anim" data-target="{{ total_courses }}">{{ total_courses }}</div>
+          <div class="stat-text">Certified Courses</div>
+        </div>
+      </div>
+      <div class="col-6 col-md-3">
+        <div class="stat-item">
+          <div class="stat-num counter-anim" data-target="{{ total_instructors }}">{{ total_instructors }}</div>
+          <div class="stat-text">Expert Mentors</div>
+        </div>
+      </div>
+      <div class="col-6 col-md-3">
+        <div class="stat-item">
+          <div class="stat-num">98%</div>
+          <div class="stat-text">Satisfaction Rate</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==========================================================================
+     Course Categories
+     ========================================================================== -->
+<section class="py-5" style="background-color: var(--light-bg);">
+  <div class="container py-3">
+    <div class="d-flex justify-content-between align-items-end mb-4">
+      <div>
+        <span class="text-uppercase fw-bold small" style="color: var(--purple-primary);">Categories</span>
+        <h2 class="fw-bold mb-0">Browse by Subject</h2>
+      </div>
+      <a href="{% url 'courses' %}" class="btn btn-outline-primary rounded-pill btn-sm">All Categories <i class="bi bi-arrow-right"></i></a>
+    </div>
+
+    <div class="row g-4">
+      {% for cat in categories %}
+        <div class="col-6 col-md-4 col-lg-2">
+          <a href="{% url 'courses' %}?category={{ cat.slug }}" class="category-pill-card">
+            <div class="category-icon">
+              <i class="bi {{ cat.icon }}"></i>
+            </div>
+            <h6 class="fw-bold text-dark mb-1" style="font-size: 0.95rem;">{{ cat.name }}</h6>
+            <small class="text-muted">{{ cat.get_course_count }} Courses</small>
+          </a>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<!-- ==========================================================================
+     Popular Courses Showcase
+     ========================================================================== -->
+<section class="py-5 bg-white">
+  <div class="container py-3">
+    <div class="d-flex justify-content-between align-items-end mb-4">
+      <div>
+        <span class="text-uppercase fw-bold small" style="color: var(--purple-primary);">Top Programs</span>
+        <h2 class="fw-bold mb-0">Popular Courses</h2>
+      </div>
+      <a href="{% url 'courses' %}" class="btn btn-primary rounded-pill btn-sm">Explore Catalog</a>
+    </div>
+
+    <div class="row g-4">
+      {% for course in popular_courses %}
+        <div class="col-12 col-md-6 col-lg-4">
+          <div class="course-card">
+            <div class="course-thumb-wrap">
+              <img src="{{ course.get_thumbnail_url }}" alt="{{ course.title }}" class="course-thumb-img">
+              <span class="course-level-tag">{{ course.get_level_display }}</span>
+            </div>
+            <div class="course-card-content">
+              <span class="course-cat-title">{{ course.category.name|default:"General" }}</span>
+              <h5 class="fw-bold text-dark mb-2">
+                <a href="{% url 'course_detail' slug=course.slug %}" class="text-decoration-none text-dark">{{ course.title }}</a>
+              </h5>
+              <p class="text-muted small mb-3 flex-grow-1" style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
+                {{ course.short_description }}
+              </p>
+
+              <div class="d-flex align-items-center gap-2 mb-3">
+                <img src="{{ course.instructor.profile.get_avatar_url }}" alt="{{ course.instructor.username }}" class="rounded-circle" width="28" height="28" style="object-fit: cover;">
+                <span class="small text-muted">{{ course.instructor.get_full_name|default:course.instructor.username }}</span>
+              </div>
+
+              <div class="d-flex justify-content-between align-items-center pt-3 border-top">
+                <div class="text-muted small">
+                  <i class="bi bi-journal-code text-primary me-1"></i>{{ course.get_total_lessons }} Lessons
+                </div>
+                <div>
+                  {% if course.is_free %}
+                    <span class="badge bg-success-subtle text-success fs-6 fw-bold">Free</span>
+                  {% else %}
+                    <span class="fw-bold fs-5" style="color: var(--navy-dark);">${{ course.price }}</span>
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<!-- ==========================================================================
+     Why Choose Us Section
+     ========================================================================== -->
+<section class="py-5" style="background-color: var(--lavender-light);">
+  <div class="container py-4">
+    <div class="text-center max-w-700 mx-auto mb-5">
+      <span class="text-uppercase fw-bold small" style="color: var(--purple-primary);">Why EduVibe</span>
+      <h2 class="fw-bold">Designed for Real-World Competence</h2>
+      <p class="text-muted">Everything you need to level up your career with verifiable skills.</p>
+    </div>
+
+    <div class="row g-4">
+      <div class="col-md-4">
+        <div class="card-custom p-4 text-center h-100 bg-white">
+          <div class="rounded-circle bg-purple mx-auto mb-3 d-flex align-items-center justify-content-center" style="width: 60px; height: 60px; background-color: var(--lavender); color: var(--purple-primary); font-size: 1.5rem;">
+            <i class="bi bi-code-slash"></i>
+          </div>
+          <h5 class="fw-bold">Project-First Curriculum</h5>
+          <p class="text-muted small mb-0">Build tangible portfolio applications, write real code, and solve genuine engineering challenges.</p>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card-custom p-4 text-center h-100 bg-white">
+          <div class="rounded-circle bg-purple mx-auto mb-3 d-flex align-items-center justify-content-center" style="width: 60px; height: 60px; background-color: var(--blue-light); color: var(--blue-dark); font-size: 1.5rem;">
+            <i class="bi bi-question-diamond-fill"></i>
+          </div>
+          <h5 class="fw-bold">Knowledge Checks &amp; Quizzes</h5>
+          <p class="text-muted small mb-0">Reinforce your knowledge with automated quizzes, pass marks, and instant grade explanations.</p>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card-custom p-4 text-center h-100 bg-white">
+          <div class="rounded-circle bg-purple mx-auto mb-3 d-flex align-items-center justify-content-center" style="width: 60px; height: 60px; background-color: #DCFCE7; color: #16A34A; font-size: 1.5rem;">
+            <i class="bi bi-award-fill"></i>
+          </div>
+          <h5 class="fw-bold">Accredited Certificates</h5>
+          <p class="text-muted small mb-0">Receive verifiable certificate codes to showcase on your LinkedIn, resume, or personal website.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==========================================================================
+     Featured Instructors
+     ========================================================================== -->
+<section class="py-5 bg-white">
+  <div class="container py-3">
+    <div class="text-center mb-5">
+      <span class="text-uppercase fw-bold small" style="color: var(--purple-primary);">Mentorship</span>
+      <h2 class="fw-bold">Learn from Industry Instructors</h2>
+    </div>
+
+    <div class="row g-4 justify-content-center">
+      {% for inst in instructors %}
+        <div class="col-6 col-md-3 text-center">
+          <div class="card-custom p-4 h-100">
+            <img src="{{ inst.profile.get_avatar_url }}" alt="{{ inst.username }}" class="rounded-circle mb-3 border border-2 border-primary" width="80" height="80" style="object-fit: cover;">
+            <h6 class="fw-bold text-dark mb-1">{{ inst.get_full_name|default:inst.username }}</h6>
+            <p class="text-muted small mb-2">{{ inst.profile.headline|default:"Senior Instructor" }}</p>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<!-- ==========================================================================
+     Call to Action Banner
+     ========================================================================== -->
+<section class="py-5 text-white" style="background: linear-gradient(135deg, var(--purple-dark) 0%, var(--navy-dark) 100%);">
+  <div class="container py-4 text-center">
+    <h2 class="display-6 fw-bold mb-3">Begin Your Learning Journey Today</h2>
+    <p class="lead opacity-90 mb-4 max-w-700 mx-auto">Create a free account in 30 seconds and gain immediate access to our courses and interactive modules.</p>
+    <div class="d-flex justify-content-center gap-3">
+      <a href="{% url 'register' %}" class="btn btn-light btn-lg rounded-pill px-5 fw-bold" style="color: var(--purple-dark);">Get Started Free</a>
+      <a href="{% url 'courses' %}" class="btn btn-outline-light btn-lg rounded-pill px-4">Browse Catalog</a>
+    </div>
+  </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'online_app/js/dashboard.js' %}"></script>
+{% endblock %}

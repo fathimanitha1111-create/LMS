@@ -1,0 +1,79 @@
+{% extends 'online_app/base.html' %}
+{% load static %}
+
+{% block title %}User Profile - Online LMS{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'online_app/css/profile.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-lg-8">
+      <div class="card-custom p-4 p-md-5 bg-white">
+        <div class="d-flex align-items-center gap-3 mb-4 pb-3 border-bottom">
+          <img src="{{ user.profile.get_avatar_url }}" alt="{{ user.username }}" class="profile-avatar-large shadow-sm">
+          <div>
+            <h3 class="fw-bold mb-0 text-dark">{{ user.get_full_name|default:user.username }}</h3>
+            <span class="badge bg-primary-subtle text-primary">{{ user.profile.get_role_display }}</span>
+            <small class="text-muted d-block mt-1">Member since {{ user.date_joined|date:"M Y" }}</small>
+          </div>
+        </div>
+
+        <form method="POST" enctype="multipart/form-data">
+          {% csrf_token %}
+
+          <div class="profile-section-title">
+            <i class="bi bi-person-fill me-2"></i>Account Details
+          </div>
+          <div class="row g-3 mb-4">
+            <div class="col-md-6">
+              <label class="form-label small fw-semibold">First Name</label>
+              {{ u_form.first_name }}
+            </div>
+            <div class="col-md-6">
+              <label class="form-label small fw-semibold">Last Name</label>
+              {{ u_form.last_name }}
+            </div>
+            <div class="col-12">
+              <label class="form-label small fw-semibold">Email Address</label>
+              {{ u_form.email }}
+            </div>
+          </div>
+
+          <div class="profile-section-title">
+            <i class="bi bi-badge-ad me-2"></i>Public Profile Information
+          </div>
+          <div class="row g-3 mb-4">
+            <div class="col-12">
+              <label class="form-label small fw-semibold">Headline</label>
+              {{ p_form.headline }}
+              <small class="text-muted">Brief professional title or area of interest</small>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label small fw-semibold">Phone Number</label>
+              {{ p_form.phone }}
+            </div>
+            <div class="col-md-6">
+              <label class="form-label small fw-semibold">Avatar Image</label>
+              {{ p_form.avatar }}
+            </div>
+            <div class="col-12">
+              <label class="form-label small fw-semibold">Biography</label>
+              {{ p_form.bio }}
+            </div>
+          </div>
+
+          <div class="d-flex justify-content-between align-items-center pt-3 border-top">
+            <a href="{% url 'student_dashboard' %}" class="btn btn-outline-secondary rounded-pill px-4">Cancel</a>
+            <button type="submit" class="btn btn-primary rounded-pill px-5 fw-bold shadow-sm">
+              Save Profile Changes
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

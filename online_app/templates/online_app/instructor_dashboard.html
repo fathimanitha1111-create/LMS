@@ -1,0 +1,184 @@
+{% extends 'online_app/base.html' %}
+{% load static %}
+
+{% block title %}Instructor Dashboard - Online LMS{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'online_app/css/dashboard.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="dashboard-banner">
+  <div class="container">
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
+      <div class="d-flex align-items-center gap-3">
+        <img src="{{ user.profile.get_avatar_url }}" alt="{{ user.username }}" class="rounded-circle border border-2 border-primary shadow-sm" width="70" height="70" style="object-fit: cover;">
+        <div>
+          <h2 class="h4 fw-bold mb-0 text-dark">Instructor Studio: {{ user.get_full_name|default:user.username }}</h2>
+          <p class="text-muted small mb-0">{{ user.profile.headline|default:"Course Author & Mentor" }}</p>
+        </div>
+      </div>
+
+      <a href="{% url 'create_course' %}" class="btn btn-primary rounded-pill px-4 shadow-sm">
+        <i class="bi bi-plus-circle me-1"></i> Create New Course
+      </a>
+    </div>
+  </div>
+</div>
+
+<div class="container py-5">
+  <!-- Metrics -->
+  <div class="row g-4 mb-5">
+    <div class="col-md-6 col-lg-4">
+      <div class="metric-card">
+        <div class="metric-icon-wrap" style="background-color: var(--lavender); color: var(--purple-primary);">
+          <i class="bi bi-collection-play-fill"></i>
+        </div>
+        <h3 class="fw-bold mb-0 text-dark">{{ total_courses }}</h3>
+        <span class="text-muted small fw-semibold">Courses Created</span>
+      </div>
+    </div>
+
+    <div class="col-md-6 col-lg-4">
+      <div class="metric-card">
+        <div class="metric-icon-wrap" style="background-color: var(--blue-light); color: var(--blue-dark);">
+          <i class="bi bi-people-fill"></i>
+        </div>
+        <h3 class="fw-bold mb-0 text-dark">{{ total_students }}</h3>
+        <span class="text-muted small fw-semibold">Total Enrolled Students</span>
+      </div>
+    </div>
+
+    <div class="col-md-6 col-lg-4">
+      <div class="metric-card">
+        <div class="metric-icon-wrap" style="background-color: #DCFCE7; color: #16A34A;">
+          <i class="bi bi-shield-check"></i>
+        </div>
+        <h3 class="fw-bold mb-0 text-dark">Verified</h3>
+        <span class="text-muted small fw-semibold">Instructor Status</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Courses Management Table -->
+  <div class="card-custom p-4 bg-white mb-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <div>
+        <h4 class="fw-bold mb-0 text-dark">Your Authored Courses</h4>
+        <small class="text-muted">Manage syllabus, add lessons, create quizzes and assignments</small>
+      </div>
+      <a href="{% url 'create_course' %}" class="btn btn-sm btn-outline-primary rounded-pill px-3">
+        <i class="bi bi-plus-lg me-1"></i> Add Course
+      </a>
+    </div>
+
+    <div class="table-responsive">
+      <table class="table align-middle">
+        <thead class="table-light">
+          <tr>
+            <th>Course</th>
+            <th>Category</th>
+            <th>Lessons</th>
+            <th>Enrolled</th>
+            <th>Price</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for course in courses %}
+            <tr>
+              <td>
+                <div class="d-flex align-items-center gap-3">
+                  <img src="{{ course.get_thumbnail_url }}" alt="{{ course.title }}" class="rounded-2" width="60" height="40" style="object-fit: cover;">
+                  <div>
+                    <h6 class="mb-0 fw-bold">
+                      <a href="{% url 'course_detail' slug=course.slug %}" class="text-decoration-none text-dark">{{ course.title }}</a>
+                    </h6>
+                    <small class="text-muted">{{ course.level|title }}</small>
+                  </div>
+                </div>
+              </td>
+              <td><span class="badge bg-light text-dark border">{{ course.category.name|default:"General" }}</span></td>
+              <td>{{ course.get_total_lessons }}</td>
+              <td><i class="bi bi-people me-1"></i>{{ course.get_total_students }}</td>
+              <td>{% if course.is_free %}Free{% else %}${{ course.price }}{% endif %}</td>
+              <td>
+                {% if course.is_published %}
+                  <span class="badge bg-success-subtle text-success">Published</span>
+                {% else %}
+                  <span class="badge bg-secondary-subtle text-secondary">Draft</span>
+                {% endif %}
+              </td>
+              <td>
+                <div class="dropdown">
+                  <button class="btn btn-sm btn-outline-secondary dropdown-toggle rounded-pill" type="button" data-bs-toggle="dropdown">
+                    Manage
+                  </button>
+                  <ul class="dropdown-menu dropdown-menu-end shadow border-0">
+                    <li><a class="dropdown-item py-2" href="{% url 'add_lesson' course_id=course.id %}"><i class="bi bi-plus-square text-primary me-2"></i>Add Lesson</a></li>
+                    <li><a class="dropdown-item py-2" href="{% url 'add_quiz' course_id=course.id %}"><i class="bi bi-question-diamond text-warning me-2"></i>Add Quiz</a></li>
+                    <li><a class="dropdown-item py-2" href="{% url 'add_assignment' course_id=course.id %}"><i class="bi bi-clipboard-plus text-success me-2"></i>Add Assignment</a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item py-2" href="{% url 'edit_course' course_id=course.id %}"><i class="bi bi-pencil-square me-2"></i>Edit Course</a></li>
+                    <li><a class="dropdown-item py-2 text-danger" href="{% url 'delete_course' course_id=course.id %}"><i class="bi bi-trash3 me-2"></i>Delete Course</a></li>
+                  </ul>
+                </div>
+              </td>
+            </tr>
+          {% empty %}
+            <tr>
+              <td colspan="7" class="text-center py-4 text-muted">
+                You haven't created any courses yet. Click "Create New Course" above!
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Recent Student Enrollments -->
+  <div class="card-custom p-4 bg-white">
+    <h4 class="fw-bold mb-3 text-dark">Recent Student Enrollments</h4>
+    <div class="table-responsive">
+      <table class="table align-middle">
+        <thead class="table-light">
+          <tr>
+            <th>Student</th>
+            <th>Course</th>
+            <th>Enrollment Date</th>
+            <th>Current Progress</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for enr in recent_enrollments %}
+            <tr>
+              <td>
+                <div class="d-flex align-items-center gap-2">
+                  <img src="{{ enr.user.profile.get_avatar_url }}" alt="{{ enr.user.username }}" class="rounded-circle" width="30" height="30" style="object-fit: cover;">
+                  <span class="fw-semibold">{{ enr.user.get_full_name|default:enr.user.username }}</span>
+                </div>
+              </td>
+              <td>{{ enr.course.title }}</td>
+              <td>{{ enr.enrolled_at|date:"M d, Y" }}</td>
+              <td>
+                <div class="d-flex align-items-center gap-2" style="max-width: 180px;">
+                  <div class="progress flex-grow-1" style="height: 6px;">
+                    <div class="progress-bar bg-success" style="width: {{ enr.get_progress_percentage }}%;"></div>
+                  </div>
+                  <small class="fw-bold text-muted">{{ enr.get_progress_percentage }}%</small>
+                </div>
+              </td>
+            </tr>
+          {% empty %}
+            <tr>
+              <td colspan="4" class="text-center py-4 text-muted">No student enrollments recorded yet.</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}
