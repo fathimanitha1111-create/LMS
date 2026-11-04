@@ -39,3 +39,4 @@ urlpatterns = [
     path('instructor/quiz/<int:quiz_id>/question/add/', views.add_question, name='add_question'),
     path('instructor/course/<int:course_id>/assignment/add/', views.add_assignment, name='add_assignment'),
 ]
+

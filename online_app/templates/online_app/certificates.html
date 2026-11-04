@@ -16,7 +16,7 @@
     <!-- Detailed Printable Certificate View -->
     <div class="card-custom p-5 bg-white border border-3 border-primary shadow-lg mb-5 text-center position-relative" id="printableCertificate" style="max-width: 850px; margin: 0 auto; background: radial-gradient(circle at top right, #faf5ff 0%, #ffffff 80%);">
       <div class="d-flex justify-content-between align-items-center mb-4">
-        <img src="{% static 'online_app/images/logo.png' %}" alt="LMS Logo" width="55" height="55">
+        <img src="{% static 'online_app/images/logo/logo.png' %}" alt="LMS Logo" width="55" height="55">
         <div class="text-end">
           <span class="badge bg-primary-subtle text-primary fw-bold px-3 py-2 rounded-pill">Official Credential</span>
           <small class="d-block text-muted mt-1">Verification Code: <strong>{{ active_cert.certificate_code }}</strong></small>
@@ -96,3 +96,4 @@
   </div>
 </div>
 {% endblock %}
+

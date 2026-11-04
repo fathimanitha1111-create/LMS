@@ -98,13 +98,18 @@
 
     <div class="row g-4">
       {% for cat in categories %}
-        <div class="col-6 col-md-4 col-lg-2">
+        <div class="col-6 col-md-4 col-lg-3">
           <a href="{% url 'courses' %}?category={{ cat.slug }}" class="category-pill-card">
-            <div class="category-icon">
-              <i class="bi {{ cat.icon }}"></i>
+            <div class="category-img-wrap">
+              <img src="{{ cat.get_image_url }}" alt="{{ cat.name }}" class="category-card-img">
             </div>
-            <h6 class="fw-bold text-dark mb-1" style="font-size: 0.95rem;">{{ cat.name }}</h6>
-            <small class="text-muted">{{ cat.get_course_count }} Courses</small>
+            <div class="d-flex align-items-center justify-content-center gap-2 mt-2">
+              <div class="category-icon">
+                <i class="bi {{ cat.icon }}"></i>
+              </div>
+              <h6 class="fw-bold text-dark mb-0" style="font-size: 0.95rem;">{{ cat.name }}</h6>
+            </div>
+            <small class="text-muted d-block mt-1">{{ cat.get_course_count }} Courses</small>
           </a>
         </div>
       {% endfor %}
@@ -237,7 +242,7 @@
 <!-- ==========================================================================
      Call to Action Banner
      ========================================================================== -->
-<section class="py-5 text-white" style="background: linear-gradient(135deg, var(--purple-dark) 0%, var(--navy-dark) 100%);">
+<section class="py-5 text-white cta-banner-lms">
   <div class="container py-4 text-center">
     <h2 class="display-6 fw-bold mb-3">Begin Your Learning Journey Today</h2>
     <p class="lead opacity-90 mb-4 max-w-700 mx-auto">Create a free account in 30 seconds and gain immediate access to our courses and interactive modules.</p>
@@ -252,3 +257,4 @@
 {% block extra_js %}
 <script src="{% static 'online_app/js/dashboard.js' %}"></script>
 {% endblock %}
+

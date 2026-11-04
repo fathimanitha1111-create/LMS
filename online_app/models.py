@@ -20,7 +20,7 @@ class UserProfile(models.Model):
     headline = models.CharField(max_length=150, blank=True, help_text="e.g. Senior Software Engineer | Student")
     bio = models.TextField(blank=True)
     avatar = models.ImageField(upload_to='avatars/', blank=True, null=True)
-    avatar_static = models.CharField(max_length=255, blank=True, default='online_app/images/instructors/inst1.png')
+    avatar_static = models.CharField(max_length=255, blank=True, default='online_app/images/instructors/instructor1.jpg')
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
@@ -34,7 +34,7 @@ class UserProfile(models.Model):
             return self.avatar.url
         if self.avatar_static:
             return static(self.avatar_static)
-        return static('online_app/images/instructors/inst1.png')
+        return static('online_app/images/instructors/instructor1.jpg')
 
 
 @receiver(post_save, sender=User)
@@ -51,6 +51,8 @@ class Category(models.Model):
     slug = models.SlugField(unique=True, blank=True)
     icon = models.CharField(max_length=60, default='bi-code-slash', help_text="Bootstrap icon class name")
     description = models.TextField(blank=True)
+    image = models.ImageField(upload_to='categories/', blank=True, null=True)
+    image_static = models.CharField(max_length=255, blank=True, default='')
 
     class Meta:
         verbose_name_plural = 'Categories'
@@ -66,6 +68,25 @@ class Category(models.Model):
 
     def get_course_count(self):
         return self.courses.filter(is_published=True).count()
+
+    def get_image_url(self):
+        if self.image:
+            return self.image.url
+        if self.image_static:
+            return static(self.image_static)
+        category_map = {
+            'python-programming': 'online_app/images/categories/python.jpg',
+            'web-development': 'online_app/images/categories/web_dev.jpg',
+            'data-science-ai': 'online_app/images/categories/data_science.jpg',
+            'frontend-engineering': 'online_app/images/categories/web_dev.jpg',
+            'ui-ux-design': 'online_app/images/categories/ui_ux.jpg',
+            'mobile-development': 'online_app/images/categories/mobile_dev.jpg',
+            'cloud-computing': 'online_app/images/categories/cloud_computing.jpg',
+            'cloud-devops': 'online_app/images/categories/cloud_computing.jpg',
+            'artificial-intelligence': 'online_app/images/categories/ai.jpg',
+            'digital-marketing': 'online_app/images/categories/digital_marketing.jpg',
+        }
+        return static(category_map.get(self.slug, 'online_app/images/categories/web_dev.jpg'))
 
 
 class Course(models.Model):
@@ -113,7 +134,17 @@ class Course(models.Model):
             return self.thumbnail.url
         if self.thumbnail_static:
             return static(self.thumbnail_static)
-        return static('online_app/images/courses/course1.png')
+        course_map = {
+            'python-django-fullstack-bootcamp': 'online_app/images/courses/python.jpg',
+            'machine-learning-ai-python': 'online_app/images/courses/ai.jpg',
+            'responsive-web-design-bootstrap-5': 'online_app/images/courses/web_dev.jpg',
+            'cloud-devops-docker-kubernetes': 'online_app/images/courses/cloud_computing.jpg',
+            'ui-ux-design-systems-figma': 'online_app/images/courses/ui_ux.jpg',
+            'cross-platform-mobile-apps-flutter': 'online_app/images/courses/mobile_dev.jpg',
+            'data-science-analytics-python': 'online_app/images/courses/data_science.jpg',
+            'digital-marketing-growth-analytics': 'online_app/images/courses/digital_marketing.jpg',
+        }
+        return static(course_map.get(self.slug, 'online_app/images/courses/python.jpg'))
 
     def is_free(self):
         return self.price == 0
