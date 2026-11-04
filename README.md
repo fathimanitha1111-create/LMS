@@ -1,123 +1,189 @@
-# EduVibe - Modern Learning Management System (LMS)
+# Online Learning Management System (LMS)
 
-A modern, responsive, and full-featured Learning Management System web application built with **Python Django**, **Bootstrap 5**, **JavaScript**, and **SQLite**.
-
----
-
-## 🌟 Key Features
-
-- **Responsive Design Across All Devices**: Seamless experience on Mobile smartphones, Tablets, and Desktops using Bootstrap 5.3 breakpoints and responsive components.
-- **Course Discovery & Filtering**: Live search, category filtering, skill level filters, price tags, and sorting (Newest, Popular, Highest Rated, Price).
-- **Interactive Course Player**:
-  - Distraction-free video and lesson notes reading layout.
-  - Interactive "Mark as Completed" button powered by asynchronous JavaScript (AJAX).
-  - Dynamic progress tracking bar (0% - 100%).
-  - Next / Previous lesson navigation.
-  - Collapsible curriculum drawer with completion checkmarks.
-- **Student Dashboard**:
-  - Enrolled courses with visual progress bars.
-  - Summary metrics: Total Enrolled, In Progress, Completed Courses, and Certificates.
-  - Quick action buttons to resume learning.
-- **Instructor Portal**:
-  - Manage authored courses and track enrolled student counts directly from the dashboard.
-- **Student Reviews & Star Ratings**:
-  - Verified course reviews with 1 to 5 star ratings.
-- **Authentication & User Profiles**:
-  - Registration with Student / Instructor role selection.
-  - Profile customization: avatar upload, headline, bio, and phone number.
-- **Contact & Help Center**:
-  - Functional contact form with user feedback alerts and interactive FAQ accordion.
-- **Pre-populated Demo Data**:
-  - Includes `python manage.py seed_data` command with courses, instructors, lessons, and reviews.
+A complete, professional, responsive Online Learning Management System built with **Python**, **Django 5**, **HTML5**, **CSS3**, **Bootstrap 5**, **JavaScript**, and **SQLite**.
 
 ---
 
-## 🛠️ Tech Stack
+## 🎨 Theme & Styling
 
-- **Backend**: Python 3.12, Django 5.2 (MTV architecture, ORM, Auth, Signals)
-- **Frontend**: HTML5, CSS3, Bootstrap 5.3, Bootstrap Icons, JavaScript (ES6 fetch API)
-- **Database**: SQLite (`db.sqlite3`)
+- **Color Palette**:
+  - Light Lavender (`#F5F3FF`, `#EDE9FE`, `#DDD6FE`)
+  - Soft Purple (`#8B5CF6`, `#7C3AED`, `#6D28D9`)
+  - Light Blue (`#E0F2FE`, `#38BDF8`, `#0284C7`)
+  - Light Grey (`#F8FAFC`, `#F1F5F9`, `#E2E8F0`)
+  - Dark Navy Text (`#0F172A`, `#1E1B4B`)
+  - Pure White (`#FFFFFF`)
+- **Design Elements**:
+  - Clean light-colour background.
+  - Modern cards with rounded corners.
+  - Soft shadows and attractive buttons.
+  - Fully responsive on mobile, tablet, and desktop screens.
+  - Local image assets inside `online_app/static/online_app/images/` with no external URL dependencies.
 
 ---
 
-## 🚀 Quick Start Guide
+## 📁 Required Architecture & Folder Structure
 
-### 1. Run Database Migrations (already prepared)
+```
+online_lms/
+│
+├── manage.py
+├── db.sqlite3
+├── requirements.txt
+├── .gitignore
+├── README.md
+│
+├── online_project/
+│   ├── __init__.py
+│   ├── settings.py
+│   ├── urls.py
+│   ├── asgi.py
+│   └── wsgi.py
+│
+└── online_app/
+    ├── migrations/
+    │   └── 0001_initial.py
+    ├── templates/
+    │   └── online_app/
+    │       ├── base.html
+    │       ├── home.html
+    │       ├── about.html
+    │       ├── courses.html
+    │       ├── course_detail.html
+    │       ├── login.html
+    │       ├── register.html
+    │       ├── student_dashboard.html
+    │       ├── instructor_dashboard.html
+    │       ├── my_courses.html
+    │       ├── lessons.html
+    │       ├── quiz.html
+    │       ├── assignments.html
+    │       ├── certificates.html
+    │       ├── profile.html
+    │       ├── contact.html
+    │       ├── course_form.html
+    │       ├── course_confirm_delete.html
+    │       ├── lesson_form.html
+    │       ├── quiz_form.html
+    │       ├── question_form.html
+    │       └── assignment_form.html
+    │
+    ├── static/
+    │   └── online_app/
+    │       ├── css/
+    │       │   ├── style.css
+    │       │   ├── home.css
+    │       │   ├── courses.css
+    │       │   ├── auth.css
+    │       │   ├── dashboard.css
+    │       │   ├── lessons.css
+    │       │   ├── quiz.css
+    │       │   └── profile.css
+    │       │
+    │       ├── js/
+    │       │   ├── main.js
+    │       │   ├── dashboard.js
+    │       │   └── quiz.js
+    │       │
+    │       └── images/
+    │           ├── logo.png
+    │           ├── hero.png
+    │           ├── courses/
+    │           │   ├── course1.png ... course6.png
+    │           ├── instructors/
+    │           │   ├── inst1.png ... inst4.png
+    │           └── backgrounds/
+    │               ├── pattern.png
+    │               └── cta_bg.png
+    │
+    ├── models.py
+    ├── views.py
+    ├── urls.py
+    ├── forms.py
+    ├── admin.py
+    ├── tests.py
+    └── apps.py
+```
+
+---
+
+## 🌟 Core Features & Modules
+
+### 1. Student Features
+- **Registration, Login, and Logout**: Role-based authentication using Django's auth system.
+- **Student Dashboard**: Metric cards for enrolled courses, in-progress count, completed courses, and certificates earned.
+- **Course Catalog & Filtering**: Real-time keyword search, subject category filter, skill level selection, and price filter.
+- **Course Detail & Enrollment**: Complete syllabus preview, lesson list, instructor spotlight, and 1-click database enrollment.
+- **My Courses**: Enrolled courses with real-time percentage progress bars.
+- **Lesson Player**: Responsive video player (16:9), study notes reading area, PDF download support, next/prev lesson navigation, and asynchronous AJAX "Mark as Completed" button.
+- **Online Quizzes**: Multiple choice question engine, real-time score calculation, pass/fail grading based on pass mark thresholds, and question explanations.
+- **Assignments**: Submit written solutions or upload files, view submission status and instructor feedback.
+- **Certificates**: Automatically issued upon course completion with verification codes and print/PDF download capabilities.
+- **Profile Management**: Update name, email, avatar image, phone number, headline, and biography.
+
+### 2. Instructor Features
+- **Instructor Dashboard**: Overview of courses taught, total student enrollments, and recent student activity.
+- **Course Management (CRUD)**: Create, edit, and delete courses with thumbnail uploads and pricing.
+- **Lesson Management**: Add video embed URLs, lesson reading notes, order, and PDF study materials.
+- **Quiz Management**: Create quizzes and multiple-choice questions with answer keys and explanations.
+- **Assignment Creation**: Create assignments with prompts, deadlines, and maximum marks.
+- **Student Tracking**: Monitor enrolled student progress per course.
+
+### 3. Django Admin Panel
+Configured to manage:
+- User Profiles (Students, Instructors, Admins)
+- Categories
+- Courses
+- Lessons & Lesson Progress
+- Enrollments
+- Quizzes, Questions & Quiz Results
+- Assignments & Assignment Submissions
+- Certificates
+- Contact Messages
+
+---
+
+## 🚀 How to Run the Website
+
+### 1. Install Dependencies
+```bash
+pip install -r requirements.txt
+```
+
+### 2. Run Database Migrations
 ```bash
 python manage.py migrate
 ```
 
-### 2. Populate Demo Courses & Accounts
+### 3. Populate Demo Data (Optional / Pre-loaded)
 ```bash
 python manage.py seed_data
 ```
 
-### 3. Start the Development Server
+### 4. Start the Django Server
 ```bash
 python manage.py runserver
 ```
 
-Now open your web browser and navigate to:
+Open your browser and navigate to:
 👉 **[http://127.0.0.1:8000/](http://127.0.0.1:8000/)**
 
 ---
 
-## 🔑 Demo Accounts
+## 🔑 Pre-Configured Test Accounts
 
-The project includes pre-configured demo users so you can test all features right away:
-
-| Role | Username | Password | Notes |
+| Role | Username | Password | Key Capability |
 | :--- | :--- | :--- | :--- |
-| **Student** | `student_alex` | `password123` | Enrolled in courses with active progress |
-| **Instructor** | `instructor_john` | `password123` | Course author with course management view |
-| **Admin** | `admin` | `admin123` | Access to `/admin/` management portal |
+| **Student** | `student_alex` | `password123` | Enrolled in courses, can take quizzes, view certificates |
+| **Instructor** | `instructor_john` | `password123` | Full access to Instructor Studio, create/edit courses |
+| **Admin** | `admin` | `admin123` | Full access to `/admin/` management portal |
 
 ---
 
-## 📁 Project Architecture
+## 🧪 Testing
 
+To run the automated test suite:
+```bash
+python manage.py test
 ```
-LMS/
-├── accounts/               # User profiles, auth, and student dashboard
-│   ├── forms.py            # Styled Bootstrap authentication & profile forms
-│   ├── models.py           # User Profile model & role management
-│   ├── views.py            # Login, register, dashboard, profile views
-│   └── urls.py
-├── core/                   # Marketing & informational pages
-│   ├── forms.py            # Contact & newsletter forms
-│   ├── models.py           # ContactMessage & Newsletter models
-│   ├── views.py            # Home, About, Contact, Newsletter
-│   └── urls.py
-├── courses/                # Core LMS curriculum system
-│   ├── management/commands/seed_data.py # Realistic demo data generator
-│   ├── models.py           # Category, Course, Module, Lesson, Enrollment, Review
-│   ├── views.py            # Catalog, detail, enrollment, lesson player, review
-│   ├── context_processors.py # Global categories in navbar
-│   └── urls.py
-├── lms_project/            # Django root settings & URL router
-│   ├── settings.py
-│   ├── urls.py
-│   └── wsgi.py
-├── static/
-│   ├── css/style.css       # Custom design system & responsive styling
-│   └── js/main.js          # AJAX lesson completion, tooltips, alert dismissers
-├── templates/
-│   ├── base.html           # Master layout with Bootstrap 5.3 CDN
-│   ├── navbar.html         # Responsive navigation bar
-│   ├── footer.html         # Responsive footer with newsletter
-│   ├── accounts/           # Login, Register, Dashboard, Profile templates
-│   ├── core/               # Home, About, Contact templates
-│   └── courses/            # Course List, Detail, and Lesson Player templates
-├── manage.py
-└── README.md
-```
-
----
-
-## 📱 Responsive Testing
-
-The website is fully optimized for all screen sizes:
-- **Mobile (< 576px)**: Offcanvas/collapsible navbar, single-column course cards, mobile-friendly touch targets.
-- **Tablet (576px - 992px)**: 2-column adaptive layout, stacked learning viewer.
-- **Desktop (> 992px)**: Multi-column grids, sticky curriculum sidebar, rich hero graphics.
-
+All 6 comprehensive test cases verify public pages, student enrollment, lesson progress, quiz scoring, assignment submissions, and instructor CRUD operations.
